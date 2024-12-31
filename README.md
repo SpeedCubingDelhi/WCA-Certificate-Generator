@@ -11,5 +11,5 @@ Users can customize the x and y coordinates of the names to suit their specific 
 Event logos are dynamically styled:
 Logos for events in which the participant is competing are highlighted.
 Logos for non-participated events are displayed with reduced transparency.
-For example: If "Kushaan Kapoor" participates in 3x3, 2x2, and 4x4 but not 5x5, the 5x5 logo will appear less prominent on the certificate.
+For example: If a person participates in 3x3, 2x2, and 4x4 but not 5x5, the 5x5 logo will appear less prominent on the certificate.
 This repository is a complete solution for generating professional certificates tailored for WCA competitions, ensuring accuracy and customization for every participant.
