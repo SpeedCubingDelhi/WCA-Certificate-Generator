@@ -35,7 +35,7 @@ def create_certificate(template_path, name, transparency_values):
     can = canvas.Canvas(packet, pagesize=letter)
 
     # Register and set the custom font
-    pdfmetrics.registerFont(TTFont('Playfair_Display', r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Font\Playfair_Display\static\PlayfairDisplay-Medium.ttf'))
+    pdfmetrics.registerFont(TTFont('#Font name', #font path))
 
     # Calculate the width of the text and adjust font size smoothly
     max_width = letter[0] - 200  # Max text width with margin
@@ -44,10 +44,10 @@ def create_certificate(template_path, name, transparency_values):
     font_size = max_font_size
 
     # Shrink font only if name is too wide
-    while can.stringWidth(name, "Playfair_Display", font_size) > max_width and font_size > min_font_size:
+    while can.stringWidth(name, "#Font name", font_size) > max_width and font_size > min_font_size:
         font_size -= 1
 
-    can.setFont("Playfair_Display", font_size)
+    can.setFont("#Font name", font_size)
 
     # Set the font color
     fill_color = HexColor("#d49c3d") # Gold color
@@ -55,7 +55,7 @@ def create_certificate(template_path, name, transparency_values):
     can.setStrokeColor(fill_color)
 
     # Calculate the width of the text and center-align it
-    text_width = can.stringWidth(name, "Playfair_Display", font_size)
+    text_width = can.stringWidth(name, "#Font name", font_size)
     x = (letter[0] - text_width) / 2 - 9.5  # horizontal center with slight left margin
     y = 287  # vertical position of the name
 
@@ -127,4 +127,5 @@ with open(output_file, "wb") as outputStream:
     combined_writer.write(outputStream)
 
 print("\n✅ Combined certificates created successfully!")
+
 
