@@ -67,10 +67,7 @@ def create_certificate(template_path, name, transparency_values):
 
     # Load and draw SVG images
     svg_paths = [
-        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\333.svg',
-        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\444.svg',
-        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\333oh.svg',
-        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\minx.svg',
+        #svg path
     ]
     
     svg_positions = [
@@ -108,9 +105,9 @@ def create_certificate(template_path, name, transparency_values):
     return page
 
 # File paths
-template_path = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Template.pdf'
-excel_file = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\names.xlsx'
-output_file = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Output\All Certificates.pdf'
+template_path = #template path
+excel_file = #excel path
+output_file = #output path
 
 # Read the Excel file
 df = pd.read_excel(excel_file)
@@ -130,3 +127,4 @@ with open(output_file, "wb") as outputStream:
     combined_writer.write(outputStream)
 
 print("\n✅ Combined certificates created successfully!")
+
