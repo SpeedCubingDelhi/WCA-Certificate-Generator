@@ -35,64 +35,63 @@ def create_certificate(template_path, name, transparency_values):
     can = canvas.Canvas(packet, pagesize=letter)
 
     # Register and set the custom font
-    pdfmetrics.registerFont(TTFont('<Add Font Name>', r'<PATH_TO_TTF_FONT>'))
+    pdfmetrics.registerFont(TTFont('Playfair_Display', r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Font\Playfair_Display\static\PlayfairDisplay-Medium.ttf'))
 
-    # Calculate the width of the text and adjust font size if necessary
-    max_width = letter[0] - 200  # Max width with some padding
-    font_size = 45.3  # Starting font size
-    while can.stringWidth(name, "<Add Font Name>", font_size) > max_width and font_size > 10:
-        font_size -= 15
+    # Calculate the width of the text and adjust font size smoothly
+    max_width = letter[0] - 200  # Max text width with margin
+    max_font_size = 45
+    min_font_size = 34
+    font_size = max_font_size
 
-    can.setFont("<Add Font Name>", font_size)
-    
-    # Set the color
-    fill_color = HexColor("#9a6206")
+    # Shrink font only if name is too wide
+    while can.stringWidth(name, "Playfair_Display", font_size) > max_width and font_size > min_font_size:
+        font_size -= 1
+
+    can.setFont("Playfair_Display", font_size)
+
+    # Set the font color
+    fill_color = HexColor("#d49c3d") # Gold color
     can.setFillColor(fill_color)
     can.setStrokeColor(fill_color)
 
     # Calculate the width of the text and center-align it
-    text_width = can.stringWidth(name, "<Add Font Name>", font_size)
-    x = (letter[0] - text_width) / 2 - 7.9 # Centered x position
-    y = 322  # y position
+    text_width = can.stringWidth(name, "Playfair_Display", font_size)
+    x = (letter[0] - text_width) / 2 - 9.5  # horizontal center with slight left margin
+    y = 287  # vertical position of the name
 
-    # Simulating bold text by drawing multiple times with small offsets
-    offset = 0.5  # Adjust the offset for the desired bold effect
-    can.drawString(x, y, name)  # Original position
-    can.drawString(x + offset, y, name)  # Slightly right
-    can.drawString(x - offset, y, name)  # Slightly left
-    can.drawString(x, y + offset, name)  # Slightly up
-    can.drawString(x, y - offset, name)  # Slightly down
+    # Draw the name on the certificate
+    can.drawString(x, y, name)
+
+    # Log the font size used
+    print(f"Name: {name} → Font Size: {font_size}")
 
     # Load and draw SVG images
     svg_paths = [
-        r'<PATH_TO_SVG_FILES>',
-    
-        
+        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\333.svg',
+        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\444.svg',
+        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\333oh.svg',
+        r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\All WCA Events Logo\minx.svg',
     ]
     
-    # Adjusted SVG positions
     svg_positions = [
         (99, 695), (216, 695), (333, 695),
         (450, 695),
     ]
 
-    # Desired size in points (14.22 mm converted to points)
+    # Size conversion from mm to points
     desired_width_in_points = 14.22 * (72 / 25.4)
     desired_height_in_points = 14.22 * (72 / 25.4)
 
     for svg_path, (svg_x, svg_y), transparency in zip(svg_paths, svg_positions, transparency_values):
         drawing = svg2rlg(svg_path)
-        original_width = drawing.width
-        original_height = drawing.height
-        
-        # Calculate scaling factors
-        scale_x = desired_width_in_points / original_width
-        scale_y = desired_height_in_points / original_height
-        
-        # Apply scaling
+        if drawing is None:
+            print(f"⚠️ Failed to load SVG: {svg_path}")
+            continue
+
+        scale_x = desired_width_in_points / drawing.width
+        scale_y = desired_height_in_points / drawing.height
         drawing.scale(scale_x, scale_y)
-        
-        # Change color to light gray if transparency is 0
+
         if transparency == 0:
             change_color_to_gray(drawing)
 
@@ -100,40 +99,34 @@ def create_certificate(template_path, name, transparency_values):
     
     can.save()
 
-    # Move to the beginning of the BytesIO buffer
+    # Merge the new canvas with the template PDF
     packet.seek(0)
     new_pdf = PdfReader(packet)
-
-    # Add the "watermark" (which is the new PDF) on the existing page
     page = reader.pages[0]
     page.merge_page(new_pdf.pages[0])
     
     return page
 
-# Path to the PDF template
-template_path = r'<PATH_TO_PDF_TEMPLATE>'
-
-# Path to the Excel file with participant names and transparency values
-excel_file = r'<PATH_TO_EXCEL_FILE>'
-
-# Path to the output file
-output_file = r'<PATH_TO_OUTPUT_DIRECTORY>/All Certificates.pdf'
+# File paths
+template_path = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Template.pdf'
+excel_file = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\names.xlsx'
+output_file = r'D:\Kushaan all work\Activities\Cubing Competitions\Delhi Cube Autumn Open\Output\All Certificates.pdf'
 
 # Read the Excel file
 df = pd.read_excel(excel_file)
 
-# Create a PdfWriter object for the combined PDF
+# Create a PdfWriter object for the final combined PDF
 combined_writer = PdfWriter()
 
-# Loop through each participant's name and add their certificate to the combined PDF
+# Generate and collect each certificate
 for index, row in df.iterrows():
     name = row['Name']
-    transparency_values = row[1:].tolist()  # Get transparency values from the row
+    transparency_values = row[1:].tolist()
     certificate_page = create_certificate(template_path, name, transparency_values)
     combined_writer.add_page(certificate_page)
 
-# Write the combined PDF to a file
+# Save the final PDF
 with open(output_file, "wb") as outputStream:
     combined_writer.write(outputStream)
 
-print("Combined certificates created successfully!")
+print("\n✅ Combined certificates created successfully!")
